@@ -52,6 +52,7 @@ fn load_spec(id: &str) -> Result<Box<dyn sc_service::ChainSpec>, String> {
         "" | "mainnet" => Box::new(chain_spec::mainnet_config()?),
         "dev" => Box::new(chain_spec::development_config()?),
         "malan" | "testnet" => Box::new(chain_spec::malan_config()?),
+        "fork" => Box::new(chain_spec::fork_config_raw()?),
         "local" => Box::new(chain_spec::local_testnet_config()?),
         "benchmarks" => {
             #[cfg(feature = "runtime-benchmarks")]
@@ -85,9 +86,9 @@ pub fn run() -> sc_cli::Result<()> {
     let cli = Cli::from_iter(crate::config::preprocess_cli_args(raw_cli_args));
 
     // Try to enable the log rotation function if not a dev chain.
-    if !cli.run.base.shared_params.dev {
-        cli.try_init_logger()?;
-    }
+    // if !cli.run.base.shared_params.dev {
+    //     cli.try_init_logger()?;
+    // }
 
     match &cli.subcommand {
         None => {

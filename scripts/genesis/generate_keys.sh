@@ -17,31 +17,31 @@ DIR="keys"
 CHAINX=../../target/release/chainx
 
 print_validator_address() {
-  address=$("$CHAINX" key inspect-key "$1" | tail -n 1 | awk '{print $NF}')
+  address=$("$CHAINX" key inspect "$1" | tail -n 1 | awk '{print $NF}')
   echo "                // $address"
 }
 
 print_validator_id() {
-  pubkey=$("$CHAINX" key inspect-key "$1" | tail -n 3 | head -1 | awk '{print $NF}')
+  pubkey=$("$CHAINX" key inspect "$1" | tail -n 3 | head -1 | awk '{print $NF}')
   echo "                hex![\"${pubkey:2}\"].into(),"
 }
 
 print_address() {
   local_scheme=$1
   local_uri=$2
-  address=$("$CHAINX" key inspect-key --scheme "$local_scheme" "$local_uri" | tail -n 1 | awk '{print $NF}')
+  address=$("$CHAINX" key inspect --scheme "$local_scheme" "$local_uri" | tail -n 1 | awk '{print $NF}')
   echo "            // $address"
 }
 
 print_account_key() {
-  pubkey=$("$CHAINX" key inspect-key "$1" | tail -n 3 | head -1 | awk '{print $NF}')
+  pubkey=$("$CHAINX" key inspect "$1" | tail -n 3 | head -1 | awk '{print $NF}')
   echo "            hex![\"${pubkey:2}\"].into(),"
 }
 
 print_aux_key() {
   local_scheme=$1
   local_uri=$2
-  pubkey=$("$CHAINX" key inspect-key --scheme "$local_scheme"  "$local_uri" | tail -n 3 | head -1 | awk '{print $NF}')
+  pubkey=$("$CHAINX" key inspect --scheme "$local_scheme"  "$local_uri" | tail -n 3 | head -1 | awk '{print $NF}')
   echo "            hex![\"${pubkey:2}\"].unchecked_into(),"
 }
 
@@ -66,7 +66,7 @@ main() {
     print_validator_address "$SECRET//validator//$id"
     print_validator_id      "$SECRET//validator//$id"
 
-    referral_id="Validator$id"
+    referral_id="hacpy$id"
     echo "                b\""$referral_id"\".to_vec(),"
     echo "            ),"
 
