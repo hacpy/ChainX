@@ -291,7 +291,22 @@ pub fn fork_config_raw() -> Result<MalanChainSpec, String> {
         hex!["025c76d4c6369a8c8cb9a74dd91c11d233c0b15767359b404d2f4032f7129302"].unchecked_into(),
         // 5DJ89DTfYsjorQMqajiGUHBJet8rx8yBUrpfHQPewkDsj28Z
         hex!["36782cdf9ee4a785e783580c10cfb9642c9ee11571521a20da22fb08de1dc870"].unchecked_into(),
-    )];
+    ), (
+        (
+            // 5GU2wuoPNoNQtkKRC6PTT3y9LMk2jQ1XaZPqsW7ewnyxywbF
+            hex!["c2bbd792a03d62c5f917a6ca0ca6c1513201900b90b555885a26cc90cbef2455"].into(),
+            b"rjman1".to_vec(),
+        ),
+        // 5CkcZQyrGV6EeFpvRqMkvVxBhiZNPRzjfYBzTx7G6H8yUF2k
+        hex!["1e6ffbb4f23e91fd42374d1f4e71df694645826b5fe523de83010d17a82fe873"].unchecked_into(),
+        // 5FjUPbDafmk54uDju1cKccpcsd4y4oF2LN1kMf25yHUBF8vH
+        hex!["a245f00894861c4d597ceaf8d195a240f87aabc5d4e7a6b0a8c5087bc9958e5f"].unchecked_into(),
+        // 5GTYn9bSmgb3go1Lis92pfQdMzs6QfNtiPgknKh3Gy9BNiXe
+        hex!["c25d04e2d13cfbbed3323dbb69cebe52e4a57f4d29a4e0e1fe4c982df124a643"].unchecked_into(),
+        // 5GWQfSHM7NgvtGbDRDuUrPB9RexEXSvQE2ZGyC5sfBC1ScaP
+        hex!["c48b6f712581ca56eacc992071abf5224c95e955d1285698e6a2fafae429b80a"].unchecked_into(),
+        )
+    ];
     let constructor = move || {
         mainnet_genesis(
             &wasm_binary[..],
@@ -368,6 +383,8 @@ fn mainnet_genesis(
     let tech_comm_members: Vec<AccountId> = vec![
         // 5DhacpyA2Ykpjx4AUJGbF7qa8tPqFELEVQYXQsxXQSauPb9r
         hex!["485bf22c979d4a61643f57a2006ff4fb7447a2a8ed905997c5f6b0230f39b860"].into(),
+        // 5ERJmanyMqD3Ck2UDkXNwxCsceiNHNiy7frdwYnM8Nxt5cbu
+        hex!["682ee67d1c6f6c5db7b3f155f6c31ccadcc373a1178d0fd8e1d2391075e8b424"].into(),
         // 5D7F1AJoDwuCvZZKEggeGk2brxYty9mkamUcFHyshYBnbWs3
         hex!["2e2b928d39b7a9c8688509927e17031001fab604557db093ead5069474e0584e"].into(),
         // 5HG5CswZ6X39BYqt8Dc8e4Cn2HieGnnUiG39ddGn2oq5G36W
@@ -381,6 +398,7 @@ fn mainnet_genesis(
         .collect::<Vec<_>>();
     // 100 PCX to root account for paying the transaction fee.
     balances.push((root_key.clone(), ROOT_ENDOWED));
+    balances.push((hex!["682ee67d1c6f6c5db7b3f155f6c31ccadcc373a1178d0fd8e1d2391075e8b424"].into(), ROOT_ENDOWED));
     let initial_authorities_endowed = initial_authorities_len as Balance * STAKING_LOCKED;
     let validators = initial_authorities
         .clone()
