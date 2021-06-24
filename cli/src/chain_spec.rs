@@ -277,35 +277,45 @@ pub fn fork_config_raw() -> Result<MalanChainSpec, String> {
         hex!["485bf22c979d4a61643f57a2006ff4fb7447a2a8ed905997c5f6b0230f39b860"].into();
     // export SECRET="YOUR SECRET"
     // cd scripts/genesis/generate_keys.sh && bash generate_keys.sh
-    let initial_authorities: Vec<AuthorityKeysTuple> = vec![(
+    let initial_authorities: Vec<AuthorityKeysTuple> = vec![
         (
-            // 5CcqG82V8GXnxAfR9Htacg2fF4JJk8cyFRFqbb92KAPB9CAZ
-            hex!["1880c73bc154852f900b5db6b3ee9d98c9dd39120f9702ded76f07af558b7d53"].into(),
-            b"hacpy1".to_vec(),
+            (
+                // 5CcqG82V8GXnxAfR9Htacg2fF4JJk8cyFRFqbb92KAPB9CAZ
+                hex!["1880c73bc154852f900b5db6b3ee9d98c9dd39120f9702ded76f07af558b7d53"].into(),
+                b"hacpy1".to_vec(),
+            ),
+            // 5C7kRjxKBUaJg85L6eZ1LcpwX46qMVuhg38nALaBRM6keo2o
+            hex!["0252636a2254619db458c1fe40e91ca39a7bb52bf8c99bd8a4efef458360ba0b"]
+                .unchecked_into(),
+            // 5FrMW6Jya5NqcWDvTgxw9Xvq57ukF8MKJT7u15Akkb7WfcrR
+            hex!["a78577fd7eacdf075bd80fb8dcdbc7c745a43bb2e0785a5a2a9cb8ab142cd9b3"]
+                .unchecked_into(),
+            // 5C7oRLv5b4ujJcUh8sWYsFYALbNtZYWSUB2v6Aq5u3t3ThUo
+            hex!["025c76d4c6369a8c8cb9a74dd91c11d233c0b15767359b404d2f4032f7129302"]
+                .unchecked_into(),
+            // 5DJ89DTfYsjorQMqajiGUHBJet8rx8yBUrpfHQPewkDsj28Z
+            hex!["36782cdf9ee4a785e783580c10cfb9642c9ee11571521a20da22fb08de1dc870"]
+                .unchecked_into(),
         ),
-        // 5C7kRjxKBUaJg85L6eZ1LcpwX46qMVuhg38nALaBRM6keo2o
-        hex!["0252636a2254619db458c1fe40e91ca39a7bb52bf8c99bd8a4efef458360ba0b"].unchecked_into(),
-        // 5FrMW6Jya5NqcWDvTgxw9Xvq57ukF8MKJT7u15Akkb7WfcrR
-        hex!["a78577fd7eacdf075bd80fb8dcdbc7c745a43bb2e0785a5a2a9cb8ab142cd9b3"].unchecked_into(),
-        // 5C7oRLv5b4ujJcUh8sWYsFYALbNtZYWSUB2v6Aq5u3t3ThUo
-        hex!["025c76d4c6369a8c8cb9a74dd91c11d233c0b15767359b404d2f4032f7129302"].unchecked_into(),
-        // 5DJ89DTfYsjorQMqajiGUHBJet8rx8yBUrpfHQPewkDsj28Z
-        hex!["36782cdf9ee4a785e783580c10cfb9642c9ee11571521a20da22fb08de1dc870"].unchecked_into(),
-    ), (
         (
-            // 5GU2wuoPNoNQtkKRC6PTT3y9LMk2jQ1XaZPqsW7ewnyxywbF
-            hex!["c2bbd792a03d62c5f917a6ca0ca6c1513201900b90b555885a26cc90cbef2455"].into(),
-            b"rjman1".to_vec(),
+            (
+                // 5GU2wuoPNoNQtkKRC6PTT3y9LMk2jQ1XaZPqsW7ewnyxywbF
+                hex!["c2bbd792a03d62c5f917a6ca0ca6c1513201900b90b555885a26cc90cbef2455"].into(),
+                b"rjman1".to_vec(),
+            ),
+            // 5CkcZQyrGV6EeFpvRqMkvVxBhiZNPRzjfYBzTx7G6H8yUF2k
+            hex!["1e6ffbb4f23e91fd42374d1f4e71df694645826b5fe523de83010d17a82fe873"]
+                .unchecked_into(),
+            // 5FjUPbDafmk54uDju1cKccpcsd4y4oF2LN1kMf25yHUBF8vH
+            hex!["a245f00894861c4d597ceaf8d195a240f87aabc5d4e7a6b0a8c5087bc9958e5f"]
+                .unchecked_into(),
+            // 5GTYn9bSmgb3go1Lis92pfQdMzs6QfNtiPgknKh3Gy9BNiXe
+            hex!["c25d04e2d13cfbbed3323dbb69cebe52e4a57f4d29a4e0e1fe4c982df124a643"]
+                .unchecked_into(),
+            // 5GWQfSHM7NgvtGbDRDuUrPB9RexEXSvQE2ZGyC5sfBC1ScaP
+            hex!["c48b6f712581ca56eacc992071abf5224c95e955d1285698e6a2fafae429b80a"]
+                .unchecked_into(),
         ),
-        // 5CkcZQyrGV6EeFpvRqMkvVxBhiZNPRzjfYBzTx7G6H8yUF2k
-        hex!["1e6ffbb4f23e91fd42374d1f4e71df694645826b5fe523de83010d17a82fe873"].unchecked_into(),
-        // 5FjUPbDafmk54uDju1cKccpcsd4y4oF2LN1kMf25yHUBF8vH
-        hex!["a245f00894861c4d597ceaf8d195a240f87aabc5d4e7a6b0a8c5087bc9958e5f"].unchecked_into(),
-        // 5GTYn9bSmgb3go1Lis92pfQdMzs6QfNtiPgknKh3Gy9BNiXe
-        hex!["c25d04e2d13cfbbed3323dbb69cebe52e4a57f4d29a4e0e1fe4c982df124a643"].unchecked_into(),
-        // 5GWQfSHM7NgvtGbDRDuUrPB9RexEXSvQE2ZGyC5sfBC1ScaP
-        hex!["c48b6f712581ca56eacc992071abf5224c95e955d1285698e6a2fafae429b80a"].unchecked_into(),
-        )
     ];
     let constructor = move || {
         mainnet_genesis(
@@ -398,13 +408,20 @@ fn mainnet_genesis(
         .collect::<Vec<_>>();
     // 100 PCX to root account for paying the transaction fee.
     balances.push((root_key.clone(), ROOT_ENDOWED));
-    balances.push((hex!["682ee67d1c6f6c5db7b3f155f6c31ccadcc373a1178d0fd8e1d2391075e8b424"].into(), ROOT_ENDOWED));
+    balances.push((
+        hex!["682ee67d1c6f6c5db7b3f155f6c31ccadcc373a1178d0fd8e1d2391075e8b424"].into(),
+        ROOT_ENDOWED,
+    ));
     let initial_authorities_endowed = initial_authorities_len as Balance * STAKING_LOCKED;
     let validators = initial_authorities
         .clone()
         .into_iter()
         .map(|((validator, referral_id), _, _, _, _)| (validator, referral_id, STAKING_LOCKED))
         .collect::<Vec<_>>();
+
+    let mut assets_endowed: BTreeMap<AssetId, Vec<(AccountId, Balance)>> = BTreeMap::new();
+    assets_endowed.insert(1, balances.clone());
+
     let btc_genesis_trustees = trustees
         .iter()
         .find_map(|(chain, _, trustee_params)| {
@@ -464,7 +481,7 @@ fn mainnet_genesis(
         xpallet_assets_registrar: malan::XAssetsRegistrarConfig { assets },
         xpallet_assets: malan::XAssetsConfig {
             assets_restrictions,
-            endowed: Default::default(),
+            endowed: assets_endowed,
         },
         xpallet_gateway_common: malan::XGatewayCommonConfig { trustees },
         xpallet_gateway_bitcoin: malan::XGatewayBitcoinConfig {
