@@ -1043,11 +1043,9 @@ impl pallet_elections_phragmen::migrations::v3::V2ToV3 for PhragmenElectionDepos
 }
 impl frame_support::traits::OnRuntimeUpgrade for PhragmenElectionDepositRuntimeUpgrade {
 	fn on_runtime_upgrade() -> frame_support::weights::Weight {
-        frame_support::log::info!("on_runtime_upgrade() -> frame_support::weights::Weight");
 		pallet_elections_phragmen::migrations::v3::apply::<Self>(5 * CENTS, DOLLARS)
     }
 }
-
 
 construct_runtime!(
     pub enum Runtime where
@@ -1162,7 +1160,7 @@ pub type Executive = frame_executive::Executive<
     frame_system::ChainContext<Runtime>,
     Runtime,
     AllPallets,
-    PhragmenElectionDepositRuntimeUpgrade
+    PhragmenElectionDepositRuntimeUpgrade,
 >;
 
 impl_runtime_apis! {
