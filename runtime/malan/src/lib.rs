@@ -624,7 +624,7 @@ parameter_types! {
     pub const TermDuration: BlockNumber = 1 * DAYS;
     pub const DesiredMembers: u32 = 11;
     pub const DesiredRunnersUp: u32 = 7;
-    pub const ElectionsPhragmenPalletId: LockIdentifier = *b"pcx/phre";
+    pub const PhragmenElectionPalletId: LockIdentifier = *b"pcx/phre";
 }
 
 // Make sure that there are no more than `MaxMembers` members elected via elections-phragmen.
@@ -632,7 +632,7 @@ const_assert!(DesiredMembers::get() <= CouncilMaxMembers::get());
 
 impl pallet_elections_phragmen::Config for Runtime {
     type Event = Event;
-    type PalletId = ElectionsPhragmenPalletId;
+    type PalletId = PhragmenElectionPalletId;
     type Currency = Balances;
     type ChangeMembers = Council;
     // NOTE: this implies that council's genesis members cannot be set directly and must come from
@@ -747,7 +747,7 @@ impl pallet_tips::Config for Runtime {
     type Event = Event;
     type DataDepositPerByte = DataDepositPerByte;
     type MaximumReasonLength = MaximumReasonLength;
-    type Tippers = Elections;
+    type Tippers = PhragmenElection;
     type TipCountdown = TipCountdown;
     type TipFindersFee = TipFindersFee;
     type TipReportDepositBase = TipReportDepositBase;
@@ -847,7 +847,7 @@ impl InstanceFilter<Call> for ProxyType {
                     | Call::Democracy(..)
                     | Call::Council(..)
                     | Call::TechnicalCommittee(..)
-                    | Call::Elections(..)
+                    | Call::PhragmenElection(..)
                     | Call::TechnicalMembership(..)
                     | Call::Treasury(..)
                     | Call::Utility(..)
@@ -860,7 +860,7 @@ impl InstanceFilter<Call> for ProxyType {
                 Call::Democracy(..)
                     | Call::Council(..)
                     | Call::TechnicalCommittee(..)
-                    | Call::Elections(..)
+                    | Call::PhragmenElection(..)
                     | Call::Treasury(..)
                     | Call::Utility(..)
             ),
@@ -1070,7 +1070,7 @@ construct_runtime!(
         Democracy: pallet_democracy::{Pallet, Call, Storage, Config, Event<T>} = 15,
         Council: pallet_collective::<Instance1>::{Pallet, Call, Storage, Origin<T>, Event<T>, Config<T>} = 16,
         TechnicalCommittee: pallet_collective::<Instance2>::{Pallet, Call, Storage, Origin<T>, Event<T>, Config<T>} = 17,
-        Elections: pallet_elections_phragmen::{Pallet, Call, Storage, Event<T>, Config<T>} = 18,
+        PhragmenElection: pallet_elections_phragmen::{Pallet, Call, Storage, Event<T>, Config<T>} = 18,
         TechnicalMembership: pallet_membership::<Instance1>::{Pallet, Call, Storage, Event<T>, Config<T>} = 19,
         Treasury: pallet_treasury::{Pallet, Call, Storage, Config, Event<T>} = 20,
 

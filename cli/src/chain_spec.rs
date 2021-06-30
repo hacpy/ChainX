@@ -457,7 +457,7 @@ fn mainnet_genesis(
         pallet_membership_Instance1: Default::default(),
         pallet_democracy: malan::DemocracyConfig::default(),
         pallet_treasury: Default::default(),
-        pallet_elections_phragmen: malan::ElectionsConfig::default(),
+        pallet_elections_phragmen: malan::PhragmenElectionConfig::default(),
         pallet_im_online: malan::ImOnlineConfig { keys: vec![] },
         pallet_authority_discovery: malan::AuthorityDiscoveryConfig { keys: vec![] },
         pallet_session: malan::SessionConfig {

@@ -625,7 +625,7 @@ parameter_types! {
     pub const TermDuration: BlockNumber = 1 * DAYS;
     pub const DesiredMembers: u32 = 11;
     pub const DesiredRunnersUp: u32 = 7;
-    pub const ElectionsPhragmenPalletId: LockIdentifier = *b"pcx/phre";
+    pub const PhragmenElectionPalletId: LockIdentifier = *b"pcx/phre";
 }
 
 // Make sure that there are no more than `MaxMembers` members elected via elections-phragmen.
@@ -633,7 +633,7 @@ const_assert!(DesiredMembers::get() <= CouncilMaxMembers::get());
 
 impl pallet_elections_phragmen::Config for Runtime {
     type Event = Event;
-    type PalletId = ElectionsPhragmenPalletId;
+    type PalletId = PhragmenElectionPalletId;
     type Currency = Balances;
     type ChangeMembers = Council;
     // NOTE: this implies that council's genesis members cannot be set directly and must come from
@@ -748,7 +748,7 @@ impl pallet_tips::Config for Runtime {
     type Event = Event;
     type DataDepositPerByte = DataDepositPerByte;
     type MaximumReasonLength = MaximumReasonLength;
-    type Tippers = Elections;
+    type Tippers = PhragmenElection;
     type TipCountdown = TipCountdown;
     type TipFindersFee = TipFindersFee;
     type TipReportDepositBase = TipReportDepositBase;
@@ -848,7 +848,7 @@ impl InstanceFilter<Call> for ProxyType {
                     | Call::Democracy(..)
                     | Call::Council(..)
                     | Call::TechnicalCommittee(..)
-                    | Call::Elections(..)
+                    | Call::PhragmenElection(..)
                     | Call::TechnicalMembership(..)
                     | Call::Treasury(..)
                     | Call::Utility(..)
@@ -861,7 +861,7 @@ impl InstanceFilter<Call> for ProxyType {
                 Call::Democracy(..)
                     | Call::Council(..)
                     | Call::TechnicalCommittee(..)
-                    | Call::Elections(..)
+                    | Call::PhragmenElection(..)
                     | Call::Treasury(..)
                     | Call::Utility(..)
             ),
@@ -1039,7 +1039,7 @@ pub struct PhragmenElectionDepositRuntimeUpgrade;
 impl pallet_elections_phragmen::migrations::v3::V2ToV3 for PhragmenElectionDepositRuntimeUpgrade {
 	type AccountId = AccountId;
 	type Balance = Balance;
-	type Module = Elections;
+	type Module = PhragmenElection;
 }
 impl frame_support::traits::OnRuntimeUpgrade for PhragmenElectionDepositRuntimeUpgrade {
 	fn on_runtime_upgrade() -> frame_support::weights::Weight {
@@ -1047,6 +1047,7 @@ impl frame_support::traits::OnRuntimeUpgrade for PhragmenElectionDepositRuntimeU
 		pallet_elections_phragmen::migrations::v3::apply::<Self>(5 * CENTS, DOLLARS)
     }
 }
+
 
 construct_runtime!(
     pub enum Runtime where
@@ -1080,7 +1081,7 @@ construct_runtime!(
         Democracy: pallet_democracy::{Pallet, Call, Storage, Config, Event<T>} = 15,
         Council: pallet_collective::<Instance1>::{Pallet, Call, Storage, Origin<T>, Event<T>, Config<T>} = 16,
         TechnicalCommittee: pallet_collective::<Instance2>::{Pallet, Call, Storage, Origin<T>, Event<T>, Config<T>} = 17,
-        Elections: pallet_elections_phragmen::{Pallet, Call, Storage, Event<T>, Config<T>} = 18,
+        PhragmenElection: pallet_elections_phragmen::{Pallet, Call, Storage, Event<T>, Config<T>} = 18,
         TechnicalMembership: pallet_membership::<Instance1>::{Pallet, Call, Storage, Event<T>, Config<T>} = 19,
         Treasury: pallet_treasury::{Pallet, Call, Storage, Config, Event<T>} = 20,
 
@@ -1146,6 +1147,8 @@ pub type SignedExtra = (
     BaseFilter,
     ChargeExtraFee,
 );
+
+
 /// Unchecked extrinsic type as expected by this runtime.
 pub type UncheckedExtrinsic = generic::UncheckedExtrinsic<Address, Call, Signature, SignedExtra>;
 /// The payload being signed in transactions.
@@ -1159,7 +1162,7 @@ pub type Executive = frame_executive::Executive<
     frame_system::ChainContext<Runtime>,
     Runtime,
     AllPallets,
-    (PhragmenElectionDepositRuntimeUpgrade)
+    PhragmenElectionDepositRuntimeUpgrade
 >;
 
 impl_runtime_apis! {
