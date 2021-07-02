@@ -17,31 +17,31 @@ DIR="keys"
 CHAINX=../../target/release/chainx
 
 print_validator_address() {
-  address=$("$CHAINX" key inspect-key "$1" | tail -n 1 | awk '{print $NF}')
+  address=$("$CHAINX" key inspect "$1" | tail -n 1 | awk '{print $NF}')
   echo "                // $address"
 }
 
 print_validator_id() {
-  pubkey=$("$CHAINX" key inspect-key "$1" | tail -n 3 | head -1 | awk '{print $NF}')
+  pubkey=$("$CHAINX" key inspect "$1" | tail -n 3 | head -1 | awk '{print $NF}')
   echo "                hex![\"${pubkey:2}\"].into(),"
 }
 
 print_address() {
   local_scheme=$1
   local_uri=$2
-  address=$("$CHAINX" key inspect-key --scheme "$local_scheme" "$local_uri" | tail -n 1 | awk '{print $NF}')
+  address=$("$CHAINX" key inspect --scheme "$local_scheme" "$local_uri" | tail -n 1 | awk '{print $NF}')
   echo "            // $address"
 }
 
 print_account_key() {
-  pubkey=$("$CHAINX" key inspect-key "$1" | tail -n 3 | head -1 | awk '{print $NF}')
+  pubkey=$("$CHAINX" key inspect "$1" | tail -n 3 | head -1 | awk '{print $NF}')
   echo "            hex![\"${pubkey:2}\"].into(),"
 }
 
 print_aux_key() {
   local_scheme=$1
   local_uri=$2
-  pubkey=$("$CHAINX" key inspect-key --scheme "$local_scheme"  "$local_uri" | tail -n 3 | head -1 | awk '{print $NF}')
+  pubkey=$("$CHAINX" key inspect --scheme "$local_scheme"  "$local_uri" | tail -n 3 | head -1 | awk '{print $NF}')
   echo "            hex![\"${pubkey:2}\"].unchecked_into(),"
 }
 
@@ -56,6 +56,8 @@ generate_aux_key() {
 }
 
 main() {
+  echo "please input referral_name to be generated"
+  read referral_name
   # Generate 5 pairs of genesis keys given the root secret
   for id in 1 2 3 4 5; do
     echo "SECRET//validator//$id:"
@@ -65,16 +67,15 @@ main() {
     echo "            ("
     print_validator_address "$SECRET//validator//$id"
     print_validator_id      "$SECRET//validator//$id"
-
-    referral_id="Validator$id"
+    referral_id="$referral_name$id"
     echo "                b\""$referral_id"\".to_vec(),"
     echo "            ),"
 
-    generate_aux_key babe sr25519 "$DIR/$id" "$SECRET//babe//$id"
+    generate_aux_key babe sr25519 "$DIR/$referral_name$id" "$SECRET//babe//$id"
     # Grandpa must use ed25519.
-    generate_aux_key gran ed25519 "$DIR/$id" "$SECRET//grandpa//$id"
-    generate_aux_key imon sr25519 "$DIR/$id" "$SECRET//im_online//$id"
-    generate_aux_key audi sr25519 "$DIR/$id" "$SECRET//authority_discovery//$id"
+    generate_aux_key gran ed25519 "$DIR/$referral_name$id" "$SECRET//grandpa//$id"
+    generate_aux_key imon sr25519 "$DIR/$referral_name$id" "$SECRET//im_online//$id"
+    generate_aux_key audi sr25519 "$DIR/$referral_name$id" "$SECRET//authority_discovery//$id"
 
     echo
   done
