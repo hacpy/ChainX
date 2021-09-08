@@ -13,7 +13,7 @@ def main():
     chainx_dir = os.path.dirname(scripts_dir)
     os.chdir(chainx_dir)
 
-    f = open("runtime/chainx/src/lib.rs", encoding="utf-8")
+    f = open("runtime/chainx/src/lib.rs", encoding='utf-8')
     for line in f.readlines():
         if line.strip().startswith('spec_version'):
             version = ([
