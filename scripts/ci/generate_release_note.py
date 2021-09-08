@@ -21,5 +21,5 @@ if __name__ == '__main__':
         ##### Runtime
 
         ##### Others
-    """
+    """.encode('utf-8')
     print(message)
