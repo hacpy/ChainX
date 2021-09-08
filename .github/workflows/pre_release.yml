@@ -30,6 +30,7 @@ jobs:
         shell: bash
         run: |
           cd /build
+          export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
           mv /build/rust-toolchain /build/rust-toolchain.bak
           scripts/ci/dump_spec_version.py
           build --json | tee srtool_output.json

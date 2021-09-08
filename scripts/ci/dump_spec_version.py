@@ -15,9 +15,9 @@ def main():
 
     f = open("runtime/chainx/src/lib.rs")
     for line in f.readlines():
-        if line.strip().startswith('spec_version'):
+        if line.decode('utf-8').strip().startswith('spec_version'):
             version = ([
-                int(s) for s in line.strip()[:-1].split() if s.isdigit()
+                int(s) for s in line.decode('utf-8').strip()[:-1].split() if s.isdigit()
             ])
             with open("spec_version.json", 'w') as outfile:
                 if not version:
