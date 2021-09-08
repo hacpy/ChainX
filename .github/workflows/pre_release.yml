@@ -30,7 +30,6 @@ jobs:
         shell: bash
         run: |
           cd /build
-          export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
           mv /build/rust-toolchain /build/rust-toolchain.bak
           scripts/ci/dump_spec_version.py
           build --json | tee srtool_output.json
@@ -129,16 +128,10 @@ jobs:
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
 
-      - name: Echo info
-        shell: bash
-        run: |
-          pwd
-          ls -R
-
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v1-release
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: runtime/chainx/target/srtool/chainx-runtime/chainx_runtime.compact.wasm
+          file: chainx_runtime.compact.wasm/chainx_runtime.compact.wasm
           asset_name: chainx_runtime-${{ steps.get_version.outputs.VERSION }}.compact.wasm
           tag: ${{ github.ref }}
