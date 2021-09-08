@@ -2,24 +2,24 @@
 
 if __name__ == '__main__':
     import json
-    env = json.load(open('srtool_output.json'))
-    spec_version = json.load(open('spec_version.json'))
+    env = json.load(open('srtool_output.json', encoding='utf-8'))
+    spec_version = json.load(open('spec_version.json', encoding='utf-8'))
     message = f"""
-Upgrade priority:
+        Upgrade priority:
 
-- [ ] **Medium** (upgrade at your earliest convenience)
-- [ ] **High** (upgrade ASAP)
+        - [ ] **Medium** (upgrade at your earliest convenience)
+        - [ ] **High** (upgrade ASAP)
 
-WASM runtime built with [srtool](https://hub.docker.com/r/chainxorg/srtool) using `{env['rustc']}`.
+        WASM runtime built with [srtool](https://hub.docker.com/r/chainxorg/srtool) using `{env['rustc']}`.
 
-chainx runtime proposal hash: `{env['prop']}`.
+        chainx runtime proposal hash: `{env['prop']}`.
 
-Native runtime version: **{spec_version['version']}**
+        Native runtime version: **{spec_version['version']}**
 
-#### Changes
+        #### Changes
 
-##### Runtime
+        ##### Runtime
 
-##### Others
-"""
+        ##### Others
+    """.encode('utf-8')
     print(message)
