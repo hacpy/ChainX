@@ -133,6 +133,6 @@ jobs:
         uses: svenstaro/upload-release-action@v1-release
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: chainx_runtime.compact.wasm/chainx_runtime.compact.wasm
+          file: runtime/chainx/target/srtool/chainx-runtime/chainx_runtime.compact.wasm
           asset_name: chainx_runtime-${{ steps.get_version.outputs.VERSION }}.compact.wasm
           tag: ${{ github.ref }}
