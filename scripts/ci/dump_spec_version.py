@@ -13,11 +13,11 @@ def main():
     chainx_dir = os.path.dirname(scripts_dir)
     os.chdir(chainx_dir)
 
-    f = open("runtime/chainx/src/lib.rs")
+    f = open("runtime/chainx/src/lib.rs", encoding="utf-8")
     for line in f.readlines():
-        if line.decode('utf-8').strip().startswith('spec_version'):
+        if line.strip().startswith('spec_version'):
             version = ([
-                int(s) for s in line.decode('utf-8').strip()[:-1].split() if s.isdigit()
+                int(s) for s in line.strip()[:-1].split() if s.isdigit()
             ])
             with open("spec_version.json", 'w') as outfile:
                 if not version:
