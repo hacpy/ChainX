@@ -339,7 +339,7 @@ decl_module! {
             Ok(())
         }
 
-        /// Verify a withdrawal proposal
+        /// Create a validated withdrawal proposal
         ///
         /// The signature is verified by the uploaded script and the sr25519 address is calculated
         /// by the Merkle proof with the script. If the address matches the threshold signature address
@@ -351,11 +351,15 @@ decl_module! {
         /// [`script`]: Script for locking BTC
         /// [`merkle_proof`]: Locking script-related Merkle proofs for computing Merkle roots for verification
         #[weight = <T as Trait>::WeightInfo::sign_withdraw_tx()]
-        pub fn verify_withdraw_tx(origin, tx: Option<Vec<u8>>) -> DispatchResult {
-            let _ = ensure_signed(origin)?;
+        pub fn validated_withdraw_tx(origin, tx: Vec<u8>, withdrawal_id_list: Vec<u32>, script: Vec<u8>, signature: Vec<u8>, merkle_proof: Vec<u8>) -> DispatchResult {
+            let from = ensure_signed(origin)?;
             // TODO: Verify signature
             // TODO: Verify merkle root
             // TODO: Set withdraw tx : [`VoteResult`] -> Finish
+            let tx = Self::deserialize_tx(tx.as_slice())?;
+            native!(debug, "[create_withdraw_tx] from:{:?}, withdrawal list:{:?}, tx:{:?}", from, withdrawal_id_list, tx);
+
+            Self::create_validated_withdraw(from, tx, withdrawal_id_list)?;
             Ok(())
         }
 
