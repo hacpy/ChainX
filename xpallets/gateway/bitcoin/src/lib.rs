@@ -339,6 +339,26 @@ decl_module! {
             Ok(())
         }
 
+        /// Verify a withdrawal proposal
+        ///
+        /// The signature is verified by the uploaded script and the sr25519 address is calculated
+        /// by the Merkle proof with the script. If the address matches the threshold signature address
+        /// saved on the chain, a withdrawal transaction will be created and the transaction will be
+        /// set to vote through status.
+        ///
+        /// [`tx`]: BTC transaction to be broadcast
+        /// [`signature`]:  Aggregate signatures that work with scripts for successful execution
+        /// [`script`]: Script for locking BTC
+        /// [`merkle_proof`]: Locking script-related Merkle proofs for computing Merkle roots for verification
+        #[weight = <T as Trait>::WeightInfo::sign_withdraw_tx()]
+        pub fn verify_withdraw_tx(origin, tx: Option<Vec<u8>>) -> DispatchResult {
+            let _ = ensure_signed(origin)?;
+            // TODO: Verify signature
+            // TODO: Verify merkle root
+            // TODO: Set withdraw tx : [`VoteResult`] -> Finish
+            Ok(())
+        }
+
         /// Dangerous! Be careful to set BestIndex
         #[weight = <T as Trait>::WeightInfo::set_best_index()]
         pub fn set_best_index(origin, index: BtcHeaderIndex) -> DispatchResult {
