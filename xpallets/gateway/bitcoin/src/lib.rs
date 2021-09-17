@@ -18,6 +18,7 @@ mod mock;
 mod tests;
 
 use sp_runtime::SaturatedConversion;
+use sp_std::cmp::Ordering;
 use sp_std::prelude::*;
 
 use frame_support::{
@@ -39,8 +40,9 @@ pub use light_bitcoin::{
 };
 use light_bitcoin::{
     chain::Transaction,
+    crypto::sha256,
     keys::{Address, DisplayLayout},
-    serialization::{deserialize, Reader},
+    serialization::{deserialize, Bytes, Reader, Stream},
 };
 
 use chainx_primitives::{AssetId, ReferralId};
@@ -336,6 +338,84 @@ decl_module! {
             native!(debug, "[sign_withdraw_tx] from:{:?}, vote_tx:{:?}", from, tx);
 
             Self::apply_sig_withdraw(from, tx)?;
+            Ok(())
+        }
+
+        /// Create a validated withdrawal proposal
+        ///
+        /// The signature is verified by the uploaded script and the sr25519 address is calculated
+        /// by the Merkle proof with the script. If the address matches the threshold signature address
+        /// saved on the chain, a withdrawal transaction will be created and the transaction will be
+        /// set to vote through status.
+        ///
+        /// [`tx`]: BTC transaction to be broadcast
+        /// [`signature`]:  Aggregate signatures that work with scripts for successful execution
+        /// [`script`]: Script for locking BTC
+        /// [`merkle_proof`](control in btc): Locking script-related Merkle proofs for computing Merkle roots for verification
+        #[weight = <T as Trait>::WeightInfo::sign_withdraw_tx()]
+        pub fn validated_withdraw_tx(origin, tx: Vec<u8>, withdrawal_id_list: Vec<u32>, script: Vec<u8>, signature: Vec<u8>, merkle_proof: Vec<u8>) -> DispatchResult {
+            let from = ensure_signed(origin)?;
+            // TODO: Verify merkle root
+            let leaf_version = merkle_proof[0] & 0xfe;
+            // calculate the hash of the execution script
+            let mut stream = Stream::default();
+            stream.append(&sha256(b"TapLeaf"));
+            stream.append(&sha256(b"TapLeaf"));
+            stream.append(&leaf_version);
+            stream.append(&Bytes::from(script));
+            let out = stream.out();
+            let leaf_hash = sha256(&out);
+            // compute Merkle root using execution script hash and Merkle proof
+            let path_len = (merkle_proof.len() - 33)/32;
+
+            let mut merkle_root = leaf_hash;
+            for i in 0..path_len {
+                let mut branch = Stream::default();
+                branch.append(&sha256(b"TapBranch"));
+                branch.append(&sha256(b"TapBranch"));
+
+                let p = 33 + 32 * i;
+                let node = Bytes::from(&merkle_proof[p..p + 32]);
+
+                if node.cmp(&Bytes::from(merkle_root.as_bytes())) == Ordering::Less {
+                    branch.append(&node);
+                    branch.append(&merkle_root);
+                } else {
+                    branch.append(&merkle_root);
+                    branch.append(&node);
+                }
+                merkle_root = sha256(&branch.out());
+            }
+            // compute taptweak
+            let mut stream = Stream::default();
+            stream.append(&sha256(b"TapTweak"));
+            stream.append(&sha256(b"TapTweak"));
+            stream.append(&H256::from_slice(&merkle_proof[1..33]));
+            stream.append(&merkle_root);
+            let out = stream.out();
+            let _tweak = sha256(&out);
+
+            // compute address
+            // compute taptweak publick key
+            // P + hash_tweak(P||root)G
+
+            // encode public key with sr25519
+            // compare addr to verify
+
+            // TODO: Verify signature
+            // There are perhaps two ways to verify a signature：
+            // 1. Upload scripts and signatures to verify signatures directly.
+            // This will validate against our script and will only need to match
+            // a few btc opcodes.
+            //
+            // 2. Extract signatures and scripts from transactions for verification,
+            // which would be more complex, and put most of the logic in light-bitcoin
+
+            // TODO: Set withdraw tx : [`VoteResult`] -> Finish
+            let tx = Self::deserialize_tx(tx.as_slice())?;
+            native!(debug, "[create_withdraw_tx] from:{:?}, withdrawal list:{:?}, tx:{:?}", from, withdrawal_id_list, tx);
+
+            Self::create_validated_withdraw(from, tx, withdrawal_id_list)?;
             Ok(())
         }
 

@@ -66,6 +66,8 @@ decl_event!(
     pub enum Event<T> where
         <T as frame_system::Trait>::AccountId,
     {
+        /// Set threshold signature address. [chain, threshold_sig_addr]
+        SetThresholdAddr(Chain, AccountId),
         /// A (potential) trustee set the required properties. [who, chain, trustee_props]
         SetTrusteeProps(AccountId, Chain, GenericTrusteeIntentionProps),
         /// An account set its referral_account of some chain. [who, chain, referral_account]
@@ -103,6 +105,10 @@ decl_storage! {
     trait Store for Module<T: Trait> as XGatewayCommon {
         // Trustee multisig address of the corresponding chain.
         pub TrusteeMultiSigAddr get(fn trustee_multisig_addr):
+            map hasher(twox_64_concat) Chain => T::AccountId;
+
+        // Threshold signature address
+        pub ThresholdSigAddr get(fn threshold_sig_addr):
             map hasher(twox_64_concat) Chain => T::AccountId;
 
         /// Trustee info config of the corresponding chain.
@@ -220,6 +226,27 @@ decl_module! {
             let who = ensure_signed(origin)?;
             ensure!(T::Validator::is_validator(&who), Error::<T>::NotValidator);
             Self::setup_trustee_impl(who, chain, about, hot_entity, cold_entity)
+        }
+
+        /// Set threshold signature address
+        ///
+        /// This address comes from MAST, which is the same as MAST for bitcoin transactions,
+        /// except that the last step of the address encoding is different,
+        /// using bech32m is the bitcoin address, using sr25519 is this address.
+        ///
+        /// Note: There is only a simple implementation here, and many details are not deeply explored.
+        #[weight = <T as Trait>::WeightInfo::setup_trustee()]
+        pub fn set_thresholdsig_address(
+            origin,
+            chain: Chain,
+            addr: T::AccountId,
+        ) -> DispatchResult {
+            let who = ensure_signed(origin)?;
+            ensure!(T::Validator::is_validator(&who), Error::<T>::NotValidator);
+
+            ThresholdSigAddr::<T>::insert(chain, addr.clone());
+            Self::deposit_event(Event::<T>::SetThresholdAddr(chain, addr));
+            Ok(())
         }
 
         /// Transition the trustee session.
@@ -342,6 +369,9 @@ pub fn is_valid_about<T: Trait>(about: &[u8]) -> DispatchResult {
 
     xp_runtime::xss_check(about)
 }
+
+/// TODO: threshold signature
+impl<T: Trait> Module<T> {}
 
 // trustees
 impl<T: Trait> Module<T> {
